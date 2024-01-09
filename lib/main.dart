@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laser_slides/views/home_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: LaserSlides(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LaserSlides extends ConsumerWidget {
+  const LaserSlides({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Ubuntu',
+        useMaterial3: true,
+      ),
+      home: const HomeView(),
+    );
   }
 }
