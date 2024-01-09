@@ -81,6 +81,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+          size: 30,
+        ),
+      ),
     );
   }
 }
