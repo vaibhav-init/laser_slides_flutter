@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/common/theme.dart';
 import 'package:laser_slides/common/widgets/custom_button.dart';
 import 'package:laser_slides/common/widgets/custom_textfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
@@ -26,6 +27,32 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
     outgoingStartPath.dispose();
     incomingIpAddress.dispose();
     incomingPort.dispose();
+  }
+
+  void loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      outgoingIpAddress.text = prefs.getString('outgoingIpAddress') ?? '';
+      outgoingPort.text = prefs.getString('outgoingPort') ?? '';
+      outgoingStartPath.text = prefs.getString('outgoingStartPath') ?? '';
+      incomingIpAddress.text = prefs.getString('incomingIpAddress') ?? '';
+      incomingPort.text = prefs.getString('incomingPort') ?? '';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadSettings();
+  }
+
+  void saveSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('outgoingIpAddress', outgoingIpAddress.text);
+    prefs.setString('outgoingPort', outgoingPort.text);
+    prefs.setString('outgoingStartPath', outgoingStartPath.text);
+    prefs.setString('incomingIpAddress', incomingIpAddress.text);
+    prefs.setString('incomingPort', incomingPort.text);
   }
 
   @override
@@ -89,7 +116,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
             ),
             const SizedBox(height: 10),
             CustomButton(
-              function: () {},
+              function: () => saveSettings(),
               textToUse: 'Save',
             ),
             Switch(
