@@ -14,10 +14,10 @@ class ContainerWidget extends StatelessWidget {
 
   void sendOSC() {
     final oscSocket = OSCSocket(
-      destination: InternetAddress('192.168.1.100'),
+      destination: InternetAddress('192.168.29.73'),
       destinationPort: 8000,
     );
-    final oscMessage = OSCMessage('/example', arguments: [1, 'hello']);
+    final oscMessage = OSCMessage('/beyond/', arguments: [1, 'hello']);
     oscSocket.send(oscMessage);
     oscSocket.close();
   }

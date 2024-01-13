@@ -16,6 +16,9 @@ dependencies:
   osc: ^1.0.0
   rflutter_alert: ^2.0.7
   shared_preferences: ^2.2.2
+  sqflite: ^2.3.0
+  uuid: ^4.3.3
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
