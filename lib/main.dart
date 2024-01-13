@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/common/theme.dart';
-import 'package:laser_slides/views/home_view.dart';
+// import 'package:laser_slides/views/home_view.dart';
 import 'package:laser_slides/views/settings_view.dart';
+import 'package:laser_slides/views/temp_view.dart';
 
 void main() {
   runApp(
@@ -26,7 +27,7 @@ class LaserSlides extends ConsumerWidget {
         ),
         darkTheme: ThemeData.dark(),
         themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
-        home: const HomeView(),
+        home: ContainerPage(),
         routes: {
           '/settings': (context) => const SettingsView(),
         });
