@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laser_slides/models/container_model.dart';
 import 'package:laser_slides/views/container_widget.dart';
-import 'package:laser_slides/views/home_view.dart';
 
 class ContainerPage extends StatefulWidget {
   const ContainerPage({Key? key}) : super(key: key);
@@ -40,48 +39,6 @@ class ContainerPageState extends State<ContainerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          'assets/images/logo.jpg',
-          height: 50,
-          width: 100,
-        ),
-        actions: [
-          StreamBuilder<bool>(
-            stream: wifiStreamController.stream,
-            initialData: false,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-              bool isConnected = snapshot.data ?? false;
-              return Stack(
-                children: [
-                  const Icon(
-                    Icons.wifi,
-                    size: 30,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 5,
-                      backgroundColor: isConnected ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          IconButton(
-            onPressed: () => Navigator.pushNamed(context, '/settings'),
-            icon: const Icon(
-              Icons.settings,
-              size: 30,
-            ),
-          ),
-        ],
-      ),
       body: Center(
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
