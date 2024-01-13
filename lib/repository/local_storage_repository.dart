@@ -3,19 +3,19 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SqliteService {
-  static const String tableName = 'buttons_list';
+  static const String tableName = 'buttonsList1';
 
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'buttons.db'),
+      join(path, 'buttonsDB1.db'),
       onCreate: (database, version) async {
         await database.execute(
           """CREATE TABLE $tableName(
            id TEXT PRIMARY KEY,  
            label TEXT NOT NULL,
            buttonPressedEvent TEXT NOT NULL,
-           buttonReleasedEvent TEXT NOT NULL,
+           buttonReleasedEvent TEXT NOT NULL
            )""",
         );
       },

@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laser_slides/models/button_model.dart';
+import 'package:laser_slides/repository/local_storage_repository.dart';
+import 'package:osc/osc.dart';
+import 'package:uuid/uuid.dart';
 
 StreamController<bool> wifiStreamController = StreamController<bool>();
 
@@ -12,6 +17,16 @@ void checkWifiStatus() async {
   bool isConnectedToWifi = connectivityResult == ConnectivityResult.wifi;
 
   wifiStreamController.add(isConnectedToWifi);
+}
+
+void sendOSC() {
+  final oscSocket = OSCSocket(
+    destination: InternetAddress('192.168.29.73'),
+    destinationPort: 8000,
+  );
+  final oscMessage = OSCMessage('/beyond/', arguments: [1, 'hello']);
+  oscSocket.send(oscMessage);
+  oscSocket.close();
 }
 
 void setupWifiStream() {
@@ -30,10 +45,42 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
+  List<ButtonModel> buttons = [];
+  final SqliteService sqliteService = SqliteService();
+
   @override
   void initState() {
     super.initState();
     setupWifiStream();
+    loadButtons();
+  }
+
+  Future<void> loadButtons() async {
+    List<ButtonModel> loadedButtons = await sqliteService.getAllButtons();
+    setState(() {
+      buttons = loadedButtons;
+    });
+  }
+
+  Future<void> addButton(
+    String label,
+    String buttonpressedEvent,
+    String buttonReleasedEvent,
+  ) async {
+    String uuid = const Uuid().v1();
+    ButtonModel newButton = ButtonModel(
+      label: label,
+      id: uuid,
+      buttonReleasedEvent: buttonpressedEvent,
+      buttonPressedEvent: buttonReleasedEvent,
+    );
+    await sqliteService.addButton(newButton);
+    loadButtons();
+  }
+
+  Future<void> deleteButton(String id) async {
+    await sqliteService.deleteButton(id);
+    loadButtons();
   }
 
   @override
@@ -81,9 +128,56 @@ class _HomeViewState extends ConsumerState<HomeView> {
           ),
         ],
       ),
+      body: Center(
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 200.0,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 20.0,
+            childAspectRatio: 0.8,
+          ),
+          itemCount: buttons.length,
+          itemBuilder: (context, index) {
+            return Stack(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(15.0),
+                  onTap: () => deleteButton(buttons[index].id),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: AnimatedContainer(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                      ),
+                      height: 200.0,
+                      margin: const EdgeInsets.all(15.0),
+                      duration: const Duration(
+                        milliseconds: 500,
+                      ),
+                      child: Center(
+                        child: Text(buttons[index].label,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            )),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
-        onPressed: () {},
+        onPressed: () {
+          addButton('tempu', 'new look man ', 'button released ');
+        },
         child: const Icon(
           Icons.add,
           size: 30,

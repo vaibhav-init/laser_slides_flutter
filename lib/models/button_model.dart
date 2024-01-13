@@ -1,30 +1,31 @@
 class ButtonModel {
   final String id;
   final String label;
-  final String buttonpressedEvent;
+  final String buttonPressedEvent;
   final String buttonReleasedEvent;
 
   ButtonModel({
     required this.label,
-    required this.buttonpressedEvent,
+    required this.buttonPressedEvent,
     required this.buttonReleasedEvent,
     required this.id,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'label': label,
-      'buttonpressedEvent': buttonpressedEvent,
+      'buttonPressedEvent': buttonPressedEvent,
       'buttonReleasedEvent': buttonReleasedEvent,
     };
   }
 
   factory ButtonModel.fromMap(Map<String, dynamic> map) {
     return ButtonModel(
-      id: map['id'] as String,
-      label: map['label'] as String,
-      buttonpressedEvent: map['buttonpressedEvent'] as String,
-      buttonReleasedEvent: map['buttonReleasedEvent'] as String,
+      id: map['id'],
+      label: map['label'],
+      buttonPressedEvent: map['buttonPressedEvent'],
+      buttonReleasedEvent: map['buttonReleasedEvent'],
     );
   }
 }
