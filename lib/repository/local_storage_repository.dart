@@ -46,4 +46,29 @@ class SqliteService {
       //show a scaffold later !!!
     }
   }
+
+  Future<void> updateButtonOrder(int oldIndex, int newIndex) async {
+    final db = await initializeDB();
+    final List<ButtonModel> allButtons = await getAllButtons();
+    print('function called !!!!');
+
+    if (oldIndex >= 0 &&
+        oldIndex < allButtons.length &&
+        newIndex >= 0 &&
+        newIndex < allButtons.length) {
+      print('inside the condition !!!');
+      final ButtonModel movedButton = allButtons.removeAt(oldIndex);
+      allButtons.insert(newIndex, movedButton);
+
+      for (int i = 0; i < allButtons.length; i++) {
+        final ButtonModel button = allButtons[i];
+        await db.update(
+          tableName,
+          button.toMap(),
+          where: 'id = ?',
+          whereArgs: [button.id],
+        );
+      }
+    }
+  }
 }

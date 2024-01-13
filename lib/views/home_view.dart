@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/models/button_model.dart';
 import 'package:laser_slides/repository/local_storage_repository.dart';
 import 'package:osc/osc.dart';
-import 'package:uuid/uuid.dart';
 
 StreamController<bool> wifiStreamController = StreamController<bool>();
 
@@ -66,17 +65,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     String label,
     String buttonpressedEvent,
     String buttonReleasedEvent,
-  ) async {
-    String uuid = const Uuid().v1();
-    ButtonModel newButton = ButtonModel(
-      label: label,
-      id: uuid,
-      buttonReleasedEvent: buttonpressedEvent,
-      buttonPressedEvent: buttonReleasedEvent,
-    );
-    await sqliteService.addButton(newButton);
-    loadButtons();
-  }
+  ) async {}
 
   Future<void> deleteButton(String id) async {
     await sqliteService.deleteButton(id);
@@ -167,7 +156,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       ),
                     ),
                   ),
-                )
+                ),
+                Positioned(
+                  top: -18,
+                  right: -18,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        size: 32,
+                        Icons.settings,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             );
           },
@@ -176,7 +180,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: () {
-          addButton('tempu', 'new look man ', 'button released ');
+          addButton('asklfhlqwvorh249892c5rhwinwlrk', 'new look man ',
+              'button released ');
         },
         child: const Icon(
           Icons.add,
