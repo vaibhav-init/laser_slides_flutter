@@ -69,8 +69,13 @@ class _AddButtonViewState extends State<AddEditButtonView> {
                   buttonReleasedEvent: buttonPressedEventController.text,
                   buttonPressedEvent: buttonReleasedEventController.text,
                 );
-                await sqliteService.addButton(newButton);
+                if (widget.buttonModel != null) {
+                  await sqliteService.updateButton(newButton);
+                } else {
+                  await sqliteService.addButton(newButton);
+                }
               }
+              Navigator.pop(context);
             },
             textToUse: 'Add/Update',
           ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/models/button_model.dart';
 import 'package:laser_slides/repository/local_storage_repository.dart';
+import 'package:laser_slides/views/add_button_view.dart';
 import 'package:osc/osc.dart';
 
 StreamController<bool> wifiStreamController = StreamController<bool>();
@@ -163,7 +164,17 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   child: Container(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
-                      onPressed: () {},
+                      //remove this shitty push from here !!!
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddEditButtonView(
+                            buttonModel: buttons[index],
+                          ),
+                        ),
+                      ).then(
+                        (value) => loadButtons(),
+                      ),
                       icon: const Icon(
                         size: 32,
                         Icons.settings,
@@ -180,8 +191,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: () {
-          addButton('asklfhlqwvorh249892c5rhwinwlrk', 'new look man ',
-              'button released ');
+          // replace with named route
+
+          Navigator.pushNamed(context, '/add-edit').then(
+            (value) => loadButtons(),
+          );
         },
         child: const Icon(
           Icons.add,

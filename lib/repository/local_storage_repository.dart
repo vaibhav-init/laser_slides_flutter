@@ -71,4 +71,15 @@ class SqliteService {
       }
     }
   }
+
+  Future<void> updateButton(ButtonModel updatedButton) async {
+    final db = await initializeDB();
+
+    await db.update(
+      tableName,
+      updatedButton.toMap(),
+      where: 'id = ?',
+      whereArgs: [updatedButton.id],
+    );
+  }
 }
