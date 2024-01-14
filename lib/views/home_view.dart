@@ -192,6 +192,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
               final element = buttons.removeAt(oldIndex);
               buttons.insert(newIndex, element);
             });
+            sqliteService.updateButtonOrder(oldIndex, newIndex);
           },
           children: buttons.map((e) => buildItem(e)).toList(),
         ),
