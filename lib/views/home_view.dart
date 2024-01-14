@@ -7,6 +7,7 @@ import 'package:laser_slides/common/theme.dart';
 import 'package:laser_slides/models/button_model.dart';
 import 'package:laser_slides/repository/local_storage_repository.dart';
 import 'package:laser_slides/views/add_button_view.dart';
+import 'package:laser_slides/views/settings_view.dart';
 import 'package:osc/osc.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
@@ -19,16 +20,6 @@ void checkWifiStatus() async {
   bool isConnectedToWifi = connectivityResult == ConnectivityResult.wifi;
 
   wifiStreamController.add(isConnectedToWifi);
-}
-
-void sendOSC() {
-  final oscSocket = OSCSocket(
-    destination: InternetAddress('192.168.29.73'),
-    destinationPort: 8000,
-  );
-  final oscMessage = OSCMessage('/beyond/', arguments: [1, 'hello']);
-  oscSocket.send(oscMessage);
-  oscSocket.close();
 }
 
 void setupWifiStream() {
@@ -48,6 +39,21 @@ class HomeView extends ConsumerStatefulWidget {
 class _HomeViewState extends ConsumerState<HomeView> {
   List<ButtonModel> buttons = [];
   final SqliteService sqliteService = SqliteService();
+  void sendOSC(ButtonModel buttonModel) {
+    String ipAddress = ref.watch(outgoingIpAddressProvider);
+    int destinationPort = ref.watch(outgoingPortProvider);
+
+    print(ipAddress);
+    print(destinationPort);
+    final oscSocket = OSCSocket(
+      destination: InternetAddress(ipAddress),
+      destinationPort: destinationPort,
+    );
+    final oscMessage =
+        OSCMessage(buttonModel.buttonPressedEvent, arguments: [1, 'temp']);
+    oscSocket.send(oscMessage);
+    oscSocket.close();
+  }
 
   @override
   void initState() {
@@ -78,7 +84,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
         children: [
           InkWell(
             borderRadius: BorderRadius.circular(15.0),
-            onTap: () {},
+            onTap: () => sendOSC(buttonModel),
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),

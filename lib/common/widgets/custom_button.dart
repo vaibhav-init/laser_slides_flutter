@@ -5,7 +5,7 @@ class CustomButton extends StatelessWidget {
   final VoidCallback function;
 
   const CustomButton({
-    Key? key, // Adding the key parameter
+    Key? key,
     required this.function,
     required this.textToUse,
   }) : super(key: key);
@@ -27,7 +27,7 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(buttonWidth, 50),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0), // Custom radius
+          borderRadius: BorderRadius.circular(10.0),
         ),
       ),
     );

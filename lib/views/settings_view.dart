@@ -7,7 +7,7 @@ import 'package:laser_slides/common/widgets/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final outgoingIpAddressProvider = StateProvider<String>((ref) => '');
-final outgoingPortProvider = StateProvider<String>((ref) => '');
+final outgoingPortProvider = StateProvider<int>((ref) => 1);
 final outgoingStartPathProvider = StateProvider<String>((ref) => '');
 final incomingIpAddressProvider = StateProvider<String>((ref) => '');
 final incomingPortProvider = StateProvider<String>((ref) => '');
@@ -61,7 +61,8 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
     prefs.setString('incomingIpAddress', incomingIpAddress.text);
     prefs.setString('incomingPort', incomingPort.text);
     ref.read(outgoingIpAddressProvider.notifier).state = outgoingIpAddress.text;
-    ref.read(outgoingPortProvider.notifier).state = outgoingPort.text;
+    ref.read(outgoingPortProvider.notifier).state =
+        int.tryParse(outgoingPort.text)!;
     ref.read(outgoingStartPathProvider.notifier).state = outgoingStartPath.text;
     ref.read(incomingIpAddressProvider.notifier).state = incomingIpAddress.text;
     ref.read(incomingPortProvider.notifier).state = incomingPort.text;
