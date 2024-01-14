@@ -93,7 +93,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     Radius.circular(5),
                   ),
                 ),
-                height: 200.0,
                 margin: const EdgeInsets.all(15.0),
                 duration: const Duration(
                   milliseconds: 500,
@@ -181,20 +180,21 @@ class _HomeViewState extends ConsumerState<HomeView> {
         ],
       ),
       body: Center(
-        // use ReorderableGridView.count() when version >= 2.0.0
-        // else use ReorderableGridView()
-        child: ReorderableGridView.count(
-          crossAxisSpacing: 40,
-          mainAxisSpacing: 40,
-          crossAxisCount: 3,
-          onReorder: (oldIndex, newIndex) {
-            setState(() {
-              final element = buttons.removeAt(oldIndex);
-              buttons.insert(newIndex, element);
-            });
-            sqliteService.updateButtonOrder(oldIndex, newIndex);
-          },
-          children: buttons.map((e) => buildItem(e)).toList(),
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: ReorderableGridView.count(
+            crossAxisSpacing: 25,
+            mainAxisSpacing: 25,
+            crossAxisCount: 5,
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                final element = buttons.removeAt(oldIndex);
+                buttons.insert(newIndex, element);
+              });
+              sqliteService.updateButtonOrder(oldIndex, newIndex);
+            },
+            children: buttons.map((e) => buildItem(e)).toList(),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

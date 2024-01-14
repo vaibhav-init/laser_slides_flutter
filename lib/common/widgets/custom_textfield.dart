@@ -6,38 +6,44 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
 
   const CustomTextField({
-    super.key,
+    Key? key,
     required this.controller,
     required this.hintText,
     required this.keyboardType,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      style: const TextStyle(
-        fontSize: 20,
-      ),
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(
+    double screenWidth = MediaQuery.of(context).size.width;
+    double textFieldWidth = 0.75 * screenWidth; // 0.75% of screen width
+
+    return SizedBox(
+      width: textFieldWidth,
+      child: TextField(
+        style: const TextStyle(
           fontSize: 20,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            width: 0.5,
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: const TextStyle(
+            fontSize: 20,
           ),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            width: 0.5,
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(20),
           ),
-          borderRadius: BorderRadius.circular(20),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
         ),
+        keyboardType: keyboardType,
       ),
-      keyboardType: keyboardType,
     );
   }
 }

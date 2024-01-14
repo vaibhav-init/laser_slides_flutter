@@ -39,6 +39,26 @@ class _AddButtonViewState extends State<AddEditButtonView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/images/logo.jpg',
+          height: 50,
+          width: 100,
+        ),
+        actions: [
+          if (widget.buttonModel != null)
+            IconButton(
+              onPressed: () {
+                sqliteService.deleteButton(widget.buttonModel!.id);
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.delete,
+                size: 30,
+              ),
+            ),
+        ],
+      ),
       body: Column(
         children: [
           CustomTextField(
