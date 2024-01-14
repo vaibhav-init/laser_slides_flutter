@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double textFieldWidth = 0.75 * screenWidth; // 0.75% of screen width
+    double textFieldWidth = 0.75 * screenWidth;
 
     return SizedBox(
       width: textFieldWidth,
@@ -29,6 +29,8 @@ class CustomTextField extends StatelessWidget {
           hintStyle: const TextStyle(
             fontSize: 20,
           ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               width: 0.5,

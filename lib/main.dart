@@ -20,6 +20,7 @@ class LaserSlides extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var darkMode = ref.watch(darkModeProvider);
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'Ubuntu',
           useMaterial3: true,

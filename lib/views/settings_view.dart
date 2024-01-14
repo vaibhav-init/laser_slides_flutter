@@ -1,8 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laser_slides/common/widgets/custom_button.dart';
+import 'package:laser_slides/common/utils.dart';
 import 'package:laser_slides/common/widgets/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final outgoingIpAddressProvider = StateProvider<String>((ref) => '');
+final outgoingPortProvider = StateProvider<String>((ref) => '');
+final outgoingStartPathProvider = StateProvider<String>((ref) => '');
+final incomingIpAddressProvider = StateProvider<String>((ref) => '');
+final incomingPortProvider = StateProvider<String>((ref) => '');
 
 class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
@@ -52,6 +60,13 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
     prefs.setString('outgoingStartPath', outgoingStartPath.text);
     prefs.setString('incomingIpAddress', incomingIpAddress.text);
     prefs.setString('incomingPort', incomingPort.text);
+    ref.read(outgoingIpAddressProvider.notifier).state = outgoingIpAddress.text;
+    ref.read(outgoingPortProvider.notifier).state = outgoingPort.text;
+    ref.read(outgoingStartPathProvider.notifier).state = outgoingStartPath.text;
+    ref.read(incomingIpAddressProvider.notifier).state = incomingIpAddress.text;
+    ref.read(incomingPortProvider.notifier).state = incomingPort.text;
+
+    showSnackBar(context, 'Network Settings Saved!');
   }
 
   @override
@@ -64,6 +79,23 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
             fontWeight: FontWeight.w500,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: saveSettings,
+            icon: const Icon(
+              Icons.info,
+              size: 30,
+            ),
+          ),
+          IconButton(
+            onPressed: saveSettings,
+            icon: const Icon(
+              Icons.save_outlined,
+              size: 30,
+              color: Colors.red,
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -71,52 +103,64 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //network settings
               const Text(
-                'Network Settings',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
+                'Outgoing',
+                style: TextStyle(fontSize: 24),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
+              const Text(
+                'IP Address:',
+                style: TextStyle(fontSize: 18),
+              ),
               CustomTextField(
                 controller: outgoingIpAddress,
                 hintText: '192.168.XX.XX',
                 keyboardType: TextInputType.text,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
+              const Text(
+                'Port:',
+                style: TextStyle(fontSize: 18),
+              ),
               CustomTextField(
                 controller: outgoingPort,
                 hintText: '8000',
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
-
+              const SizedBox(height: 15),
+              const Text(
+                'Start Path:',
+                style: TextStyle(fontSize: 18),
+              ),
               CustomTextField(
                 controller: outgoingStartPath,
                 hintText: '/',
                 keyboardType: TextInputType.text,
               ),
-              const SizedBox(height: 10),
-
-              //checkbox (listen to incoming messages )
+              const SizedBox(height: 15),
+              const Text(
+                'Incoming',
+                style: TextStyle(fontSize: 24),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                'IP Address:',
+                style: TextStyle(fontSize: 18),
+              ),
               CustomTextField(
                 controller: incomingIpAddress,
                 hintText: '192.168.X.X',
                 keyboardType: TextInputType.text,
               ),
-              const SizedBox(height: 10),
-
+              const SizedBox(height: 15),
+              const Text(
+                'Port:',
+                style: TextStyle(fontSize: 18),
+              ),
               CustomTextField(
                 controller: incomingPort,
                 hintText: '8080',
                 keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 10),
-              CustomButton(
-                function: () => saveSettings(),
-                textToUse: 'Save',
               ),
             ],
           ),

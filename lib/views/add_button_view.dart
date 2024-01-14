@@ -118,7 +118,7 @@ class _AddButtonViewState extends State<AddEditButtonView> {
                     // ignore: use_build_context_synchronously
                     Navigator.pop(context);
                   } else {
-                    showScaffold(
+                    showSnackBar(
                       context,
                       "Label and Button Pressed OSC can't be empty",
                     );
