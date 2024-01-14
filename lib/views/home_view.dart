@@ -7,6 +7,7 @@ import 'package:laser_slides/models/button_model.dart';
 import 'package:laser_slides/repository/local_storage_repository.dart';
 import 'package:laser_slides/views/add_button_view.dart';
 import 'package:osc/osc.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 StreamController<bool> wifiStreamController = StreamController<bool>();
 
@@ -75,6 +76,67 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    Widget buildItem(ButtonModel buttonModel) {
+      return Stack(
+        key: Key(buttonModel.id),
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(15.0),
+            onTap: () => deleteButton(buttonModel.id),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: AnimatedContainer(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                height: 200.0,
+                margin: const EdgeInsets.all(15.0),
+                duration: const Duration(
+                  milliseconds: 500,
+                ),
+                child: Center(
+                  child: Text(buttonModel.label,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      )),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: -18,
+            right: -18,
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                //remove this shitty push from here !!!
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddEditButtonView(
+                      buttonModel: buttonModel,
+                    ),
+                  ),
+                ).then(
+                  (value) => loadButtons(),
+                ),
+                icon: const Icon(
+                  size: 32,
+                  Icons.settings,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -119,73 +181,19 @@ class _HomeViewState extends ConsumerState<HomeView> {
         ],
       ),
       body: Center(
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 200.0,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 20.0,
-            childAspectRatio: 0.8,
-          ),
-          itemCount: buttons.length,
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(15.0),
-                  onTap: () => deleteButton(buttons[index].id),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: AnimatedContainer(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                      ),
-                      height: 200.0,
-                      margin: const EdgeInsets.all(15.0),
-                      duration: const Duration(
-                        milliseconds: 500,
-                      ),
-                      child: Center(
-                        child: Text(buttons[index].label,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: -18,
-                  right: -18,
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      //remove this shitty push from here !!!
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddEditButtonView(
-                            buttonModel: buttons[index],
-                          ),
-                        ),
-                      ).then(
-                        (value) => loadButtons(),
-                      ),
-                      icon: const Icon(
-                        size: 32,
-                        Icons.settings,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
+        // use ReorderableGridView.count() when version >= 2.0.0
+        // else use ReorderableGridView()
+        child: ReorderableGridView.count(
+          crossAxisSpacing: 40,
+          mainAxisSpacing: 40,
+          crossAxisCount: 3,
+          onReorder: (oldIndex, newIndex) {
+            setState(() {
+              final element = buttons.removeAt(oldIndex);
+              buttons.insert(newIndex, element);
+            });
           },
+          children: buttons.map((e) => buildItem(e)).toList(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
