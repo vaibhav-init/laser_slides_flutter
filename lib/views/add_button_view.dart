@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laser_slides/common/utils.dart';
 import 'package:laser_slides/common/widgets/custom_button.dart';
 import 'package:laser_slides/common/widgets/custom_textfield.dart';
 import 'package:laser_slides/models/button_model.dart';
@@ -59,47 +60,75 @@ class _AddButtonViewState extends State<AddEditButtonView> {
             ),
         ],
       ),
-      body: Column(
-        children: [
-          CustomTextField(
-              controller: labelController,
-              hintText: 'enter the label of text',
-              keyboardType: TextInputType.text),
-          CustomTextField(
-            controller: buttonPressedEventController,
-            hintText: 'enter the osc command for ',
-            keyboardType: TextInputType.text,
+      body: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Label:',
+                style: TextStyle(fontSize: 24),
+              ),
+              CustomTextField(
+                controller: labelController,
+                hintText: 'enter the label of text',
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 25),
+              const Text(
+                'Button Pressed:',
+                style: TextStyle(fontSize: 24),
+              ),
+              CustomTextField(
+                controller: buttonPressedEventController,
+                hintText: '/beyond/',
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 25),
+              const Text(
+                'Button Released:',
+                style: TextStyle(fontSize: 24),
+              ),
+              CustomTextField(
+                controller: buttonReleasedEventController,
+                hintText: '/',
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 25),
+              CustomButton(
+                function: () async {
+                  if (labelController.text != '' &&
+                      buttonPressedEventController.text != '') {
+                    String uuid = const Uuid().v1();
+                    if (widget.buttonModel != null) {
+                      uuid = widget.buttonModel!.id;
+                    }
+                    ButtonModel newButton = ButtonModel(
+                      label: labelController.text,
+                      id: uuid,
+                      buttonReleasedEvent: buttonReleasedEventController.text,
+                      buttonPressedEvent: buttonPressedEventController.text,
+                    );
+                    if (widget.buttonModel != null) {
+                      await sqliteService.updateButton(newButton);
+                    } else {
+                      await sqliteService.addButton(newButton);
+                    }
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
+                  } else {
+                    showScaffold(
+                      context,
+                      "Label and Button Pressed OSC can't be empty",
+                    );
+                  }
+                },
+                textToUse: 'Add/Update',
+              ),
+            ],
           ),
-          CustomTextField(
-              controller: buttonReleasedEventController,
-              hintText: 'enter button released osc command',
-              keyboardType: TextInputType.text),
-          CustomButton(
-            function: () async {
-              if (labelController.text != '' &&
-                  buttonPressedEventController.text != '' &&
-                  buttonReleasedEventController.text != '') {
-                String uuid = const Uuid().v1();
-                if (widget.buttonModel != null) {
-                  uuid = widget.buttonModel!.id;
-                }
-                ButtonModel newButton = ButtonModel(
-                  label: labelController.text,
-                  id: uuid,
-                  buttonReleasedEvent: buttonPressedEventController.text,
-                  buttonPressedEvent: buttonReleasedEventController.text,
-                );
-                if (widget.buttonModel != null) {
-                  await sqliteService.updateButton(newButton);
-                } else {
-                  await sqliteService.addButton(newButton);
-                }
-              }
-              Navigator.pop(context);
-            },
-            textToUse: 'Add/Update',
-          ),
-        ],
+        ),
       ),
     );
   }

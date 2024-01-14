@@ -25,7 +25,9 @@ class LaserSlides extends ConsumerWidget {
           useMaterial3: true,
           primaryColor: Colors.red,
         ),
-        darkTheme: ThemeData.dark(),
+        darkTheme: ThemeData.dark().copyWith(
+          primaryColor: Colors.red,
+        ),
         themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
         home: const HomeView(),
         routes: {

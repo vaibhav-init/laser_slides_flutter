@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laser_slides/common/theme.dart';
 import 'package:laser_slides/models/button_model.dart';
 import 'package:laser_slides/repository/local_storage_repository.dart';
 import 'package:laser_slides/views/add_button_view.dart';
@@ -31,8 +32,7 @@ void sendOSC() {
 }
 
 void setupWifiStream() {
-  checkWifiStatus(); // Check initially
-  // Periodically check WiFi status, you can use a timer or any suitable approach
+  checkWifiStatus();
   Timer.periodic(const Duration(seconds: 2), (timer) {
     checkWifiStatus();
   });
@@ -69,20 +69,16 @@ class _HomeViewState extends ConsumerState<HomeView> {
     String buttonReleasedEvent,
   ) async {}
 
-  Future<void> deleteButton(String id) async {
-    await sqliteService.deleteButton(id);
-    loadButtons();
-  }
-
   @override
   Widget build(BuildContext context) {
+    var darkMode = ref.watch(darkModeProvider);
     Widget buildItem(ButtonModel buttonModel) {
       return Stack(
         key: Key(buttonModel.id),
         children: [
           InkWell(
             borderRadius: BorderRadius.circular(15.0),
-            onTap: () => deleteButton(buttonModel.id),
+            onTap: () {},
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
@@ -101,7 +97,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   child: Text(buttonModel.label,
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
-                        fontSize: 18,
+                        fontSize: 20,
                       )),
                 ),
               ),
@@ -144,6 +140,15 @@ class _HomeViewState extends ConsumerState<HomeView> {
           width: 100,
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Switch(
+              value: darkMode,
+              onChanged: (val) {
+                ref.read(darkModeProvider.notifier).toggle();
+              },
+            ),
+          ),
           StreamBuilder<bool>(
             stream: wifiStreamController.stream,
             initialData: false,
