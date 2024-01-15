@@ -6,6 +6,7 @@ import 'package:laser_slides/common/theme.dart';
 import 'package:laser_slides/controllers/osc_controller.dart';
 import 'package:laser_slides/controllers/sqlite_controller.dart';
 import 'package:laser_slides/models/button_model.dart';
+import 'package:laser_slides/repository/local_repository.dart';
 import 'package:laser_slides/views/add_button_view.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
@@ -41,6 +42,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
   void initState() {
     super.initState();
     setupWifiStream();
+    initialNetworkSetup();
+  }
+
+  void initialNetworkSetup() {
+    LocalRepository localRepository = LocalRepository(ref: ref);
+    localRepository.loadInitialSettings();
   }
 
   @override

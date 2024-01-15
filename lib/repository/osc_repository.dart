@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/common/utils.dart';
 import 'package:laser_slides/models/button_model.dart';
-import 'package:laser_slides/views/settings_view.dart';
+import 'package:laser_slides/repository/local_repository.dart';
 import 'package:osc/osc.dart';
 
 final oscRepositoryProvider = Provider((ref) => OscRepository(

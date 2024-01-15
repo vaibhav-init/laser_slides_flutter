@@ -1,16 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:laser_slides/common/utils.dart';
 import 'package:laser_slides/common/widgets/custom_textfield.dart';
+import 'package:laser_slides/repository/local_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-final outgoingIpAddressProvider = StateProvider<String>((ref) => '');
-final outgoingPortProvider = StateProvider<int>((ref) => 1);
-final outgoingStartPathProvider = StateProvider<String>((ref) => '');
-final incomingIpAddressProvider = StateProvider<String>((ref) => '');
-final incomingPortProvider = StateProvider<String>((ref) => '');
 
 class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
@@ -53,21 +45,16 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
     loadSettings();
   }
 
-  void saveSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('outgoingIpAddress', outgoingIpAddress.text);
-    prefs.setString('outgoingPort', outgoingPort.text);
-    prefs.setString('outgoingStartPath', outgoingStartPath.text);
-    prefs.setString('incomingIpAddress', incomingIpAddress.text);
-    prefs.setString('incomingPort', incomingPort.text);
-    ref.read(outgoingIpAddressProvider.notifier).state = outgoingIpAddress.text;
-    ref.read(outgoingPortProvider.notifier).state =
-        int.tryParse(outgoingPort.text)!;
-    ref.read(outgoingStartPathProvider.notifier).state = outgoingStartPath.text;
-    ref.read(incomingIpAddressProvider.notifier).state = incomingIpAddress.text;
-    ref.read(incomingPortProvider.notifier).state = incomingPort.text;
-
-    showSnackBar(context, 'Network Settings Saved!');
+  void saveSetting(BuildContext context) {
+    LocalRepository localRepository = LocalRepository(ref: ref);
+    localRepository.saveSettings(
+      outgoingIpAddress.text,
+      outgoingPort.text,
+      outgoingStartPath.text,
+      incomingIpAddress.text,
+      incomingPort.text,
+      context,
+    );
   }
 
   @override
@@ -89,7 +76,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
             ),
           ),
           IconButton(
-            onPressed: saveSettings,
+            onPressed: () => saveSetting(context),
             icon: const Icon(
               Icons.save_outlined,
               size: 35,
