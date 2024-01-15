@@ -1,12 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/common/utils.dart';
 import 'package:laser_slides/common/widgets/custom_button.dart';
 import 'package:laser_slides/common/widgets/custom_textfield.dart';
+import 'package:laser_slides/controllers/sqlite_controller.dart';
 import 'package:laser_slides/models/button_model.dart';
-import 'package:laser_slides/repository/local_storage_repository.dart';
 import 'package:uuid/uuid.dart';
 
-class AddEditButtonView extends StatefulWidget {
+class AddEditButtonView extends ConsumerStatefulWidget {
   final ButtonModel? buttonModel;
 
   const AddEditButtonView({
@@ -15,10 +18,10 @@ class AddEditButtonView extends StatefulWidget {
   });
 
   @override
-  State<AddEditButtonView> createState() => _AddButtonViewState();
+  ConsumerState<AddEditButtonView> createState() => _AddButtonViewState();
 }
 
-class _AddButtonViewState extends State<AddEditButtonView> {
+class _AddButtonViewState extends ConsumerState<AddEditButtonView> {
   TextEditingController labelController = TextEditingController();
   TextEditingController buttonPressedEventController = TextEditingController();
   TextEditingController buttonReleasedEventController = TextEditingController();
@@ -35,8 +38,6 @@ class _AddButtonViewState extends State<AddEditButtonView> {
     }
   }
 
-  final SqliteService sqliteService = SqliteService();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +51,10 @@ class _AddButtonViewState extends State<AddEditButtonView> {
           if (widget.buttonModel != null)
             IconButton(
               onPressed: () {
-                sqliteService.deleteButton(widget.buttonModel!.id);
+                ref
+                    .watch(sqliteControllerProvider)
+                    .deleteButton(widget.buttonModel!.id, context);
+
                 Navigator.pop(context);
               },
               icon: const Icon(
@@ -111,11 +115,15 @@ class _AddButtonViewState extends State<AddEditButtonView> {
                       buttonPressedEvent: buttonPressedEventController.text,
                     );
                     if (widget.buttonModel != null) {
-                      await sqliteService.updateButton(newButton);
+                      ref
+                          .watch(sqliteControllerProvider)
+                          .updateButton(newButton, context);
                     } else {
-                      await sqliteService.addButton(newButton);
+                      ref
+                          .watch(sqliteControllerProvider)
+                          .addButton(newButton, context);
                     }
-                    // ignore: use_build_context_synchronously
+
                     Navigator.pop(context);
                   } else {
                     showSnackBar(

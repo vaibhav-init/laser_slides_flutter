@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laser_slides/common/theme.dart';
 import 'package:laser_slides/controllers/osc_controller.dart';
+import 'package:laser_slides/controllers/sqlite_controller.dart';
 import 'package:laser_slides/models/button_model.dart';
-import 'package:laser_slides/repository/local_storage_repository.dart';
 import 'package:laser_slides/views/add_button_view.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
@@ -36,17 +36,22 @@ class HomeView extends ConsumerStatefulWidget {
 
 class _HomeViewState extends ConsumerState<HomeView> {
   List<ButtonModel> buttons = [];
-  final SqliteService sqliteService = SqliteService();
 
   @override
   void initState() {
     super.initState();
     setupWifiStream();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     loadButtons();
   }
 
   Future<void> loadButtons() async {
-    List<ButtonModel> loadedButtons = await sqliteService.getAllButtons();
+    List<ButtonModel> loadedButtons =
+        await ref.watch(sqliteControllerProvider).getAllButtons();
     setState(() {
       buttons = loadedButtons;
     });
@@ -200,7 +205,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       final element = buttons.removeAt(oldIndex);
                       buttons.insert(newIndex, element);
                     });
-                    sqliteService.updateButtonOrder(oldIndex, newIndex);
+                    ref
+                        .watch(sqliteControllerProvider)
+                        .updateButtonOrder(oldIndex, newIndex, context);
                   },
                   children: buttons.map((e) => buildItem(e)).toList(),
                 ),
