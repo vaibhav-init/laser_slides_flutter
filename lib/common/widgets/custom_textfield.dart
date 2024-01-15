@@ -31,18 +31,6 @@ class CustomTextField extends StatelessWidget {
           ),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              width: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              width: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
         ),
         keyboardType: keyboardType,
       ),

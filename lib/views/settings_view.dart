@@ -92,7 +92,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
             onPressed: saveSettings,
             icon: const Icon(
               Icons.save_outlined,
-              size: 30,
+              size: 35,
               color: Colors.red,
             ),
           )

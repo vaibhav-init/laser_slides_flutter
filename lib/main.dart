@@ -25,9 +25,61 @@ class LaserSlides extends ConsumerWidget {
           fontFamily: 'Ubuntu',
           useMaterial3: true,
           primaryColor: Colors.red,
+          appBarTheme: const AppBarTheme(elevation: 1),
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0.5, color: Colors.red),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            focusColor: Colors.red,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0.5, color: Colors.black),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0.5, color: Colors.red),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                width: 0.5,
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         ),
-        darkTheme: ThemeData.dark().copyWith(
+        darkTheme: ThemeData(
+          scaffoldBackgroundColor: const Color(0xFF1E1E2C),
+          brightness: Brightness.dark,
+          fontFamily: 'Ubuntu',
           primaryColor: Colors.red,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF1E1E2C),
+            elevation: 1,
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderSide: const BorderSide(width: 1, color: Colors.red),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            focusColor: Colors.red,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 1, color: Colors.white),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(width: 1, color: Colors.red),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                width: 1,
+                color: Colors.white30,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         ),
         themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
         home: const HomeView(),

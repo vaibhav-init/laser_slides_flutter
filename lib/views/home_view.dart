@@ -42,8 +42,26 @@ class _HomeViewState extends ConsumerState<HomeView> {
   void sendOSC(ButtonModel buttonModel) {
     final destination = InternetAddress(ref.watch(outgoingIpAddressProvider));
 
+    final onTapUpString = buttonModel.buttonPressedEvent;
+    final List<int> arguments = [];
+    final StringBuffer currentNumber = StringBuffer();
+
+    for (int i = 0; i < onTapUpString.length; i++) {
+      if (onTapUpString[i].isEmpty) {
+        currentNumber.write(onTapUpString[i]);
+      } else if (currentNumber.isNotEmpty) {
+        arguments.add(int.parse(currentNumber.toString()));
+        currentNumber.clear();
+      }
+    }
+
+    // Add the last number if there is any
+    if (currentNumber.isNotEmpty) {
+      arguments.add(int.parse(currentNumber.toString()));
+    }
+
     final message =
-        OSCMessage(buttonModel.buttonPressedEvent, arguments: [1, 1]);
+        OSCMessage(buttonModel.buttonPressedEvent, arguments: arguments);
 
     RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
       print('Sending from ${socket.address.address}:${socket.port}...');
@@ -222,6 +240,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
         child: const Icon(
           Icons.add,
           size: 30,
+          color: Colors.black,
         ),
       ),
     );
