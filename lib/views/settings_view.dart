@@ -82,7 +82,7 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
         ),
         actions: [
           IconButton(
-            onPressed: saveSettings,
+            onPressed: () => Navigator.pushNamed(context, '/help'),
             icon: const Icon(
               Icons.info,
               size: 30,

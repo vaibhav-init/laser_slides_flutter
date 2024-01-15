@@ -6,18 +6,24 @@ class HelpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Help'),
+        title: const Text(
+          'Help',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             if (screenWidth < 600) {
-              return buildColumn();
+              return buildColumn(context);
             } else {
-              return buildRow();
+              return buildRow(context);
             }
           },
         ),
@@ -25,20 +31,20 @@ class HelpView extends StatelessWidget {
     );
   }
 
-  Widget buildColumn() {
+  Widget buildColumn(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.asset('assets/images/logo.jpg'),
           const SizedBox(height: 16.0),
-          buildRichText(),
+          buildRichText(context),
         ],
       ),
     );
   }
 
-  Widget buildRow() {
+  Widget buildRow(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,19 +55,22 @@ class HelpView extends StatelessWidget {
         const SizedBox(width: 16.0),
         Expanded(
           flex: 2,
-          child: buildRichText(),
+          child: buildRichText(context),
         ),
       ],
     );
   }
 
-  Widget buildRichText() {
+  Widget buildRichText(BuildContext context) {
+    Brightness currentBrightness = Theme.of(context).brightness;
     return RichText(
-      text: const TextSpan(
+      text: TextSpan(
         style: TextStyle(
-          fontSize: 18,
-        ),
-        children: <TextSpan>[
+            fontSize: 18,
+            color: currentBrightness == Brightness.dark
+                ? Colors.white
+                : Colors.black),
+        children: const <TextSpan>[
           TextSpan(
             text: 'ABOUT\n',
           ),

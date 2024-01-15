@@ -83,10 +83,11 @@ class LaserSlides extends ConsumerWidget {
           ),
         ),
         themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
-        home: const HelpView(),
+        home: const HomeView(),
         routes: {
           '/settings': (context) => const SettingsView(),
           '/add-edit': (context) => const AddEditButtonView(),
+          '/help': (context) => const HelpView(),
         });
   }
 }
