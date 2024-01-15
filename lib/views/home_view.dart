@@ -213,19 +213,24 @@ class _HomeViewState extends ConsumerState<HomeView> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
-          child: ReorderableGridView.count(
-            crossAxisSpacing: 25,
-            mainAxisSpacing: 25,
-            crossAxisCount: screenWidth > 600 ? 5 : 2,
-            onReorder: (oldIndex, newIndex) {
-              setState(() {
-                final element = buttons.removeAt(oldIndex);
-                buttons.insert(newIndex, element);
-              });
-              sqliteService.updateButtonOrder(oldIndex, newIndex);
-            },
-            children: buttons.map((e) => buildItem(e)).toList(),
-          ),
+          child: buttons.isEmpty
+              ? const Text(
+                  'Please Add Some Buttons + :)',
+                  style: TextStyle(fontSize: 20),
+                )
+              : ReorderableGridView.count(
+                  crossAxisSpacing: 25,
+                  mainAxisSpacing: 25,
+                  crossAxisCount: screenWidth > 600 ? 5 : 2,
+                  onReorder: (oldIndex, newIndex) {
+                    setState(() {
+                      final element = buttons.removeAt(oldIndex);
+                      buttons.insert(newIndex, element);
+                    });
+                    sqliteService.updateButtonOrder(oldIndex, newIndex);
+                  },
+                  children: buttons.map((e) => buildItem(e)).toList(),
+                ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
