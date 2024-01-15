@@ -41,34 +41,23 @@ class _HomeViewState extends ConsumerState<HomeView> {
   final SqliteService sqliteService = SqliteService();
   void sendOSC(ButtonModel buttonModel) {
     final destination = InternetAddress(ref.watch(outgoingIpAddressProvider));
+    int indexOfSpace = buttonModel.buttonPressedEvent.indexOf(' ');
 
-    final onTapUpString = buttonModel.buttonPressedEvent;
-    final List<int> arguments = [];
-    final StringBuffer currentNumber = StringBuffer();
+    RegExp regex = RegExp(r'\d+');
+    Iterable<Match> matches = regex.allMatches(buttonModel.buttonPressedEvent);
 
-    for (int i = 0; i < onTapUpString.length; i++) {
-      if (onTapUpString[i].isEmpty) {
-        currentNumber.write(onTapUpString[i]);
-      } else if (currentNumber.isNotEmpty) {
-        arguments.add(int.parse(currentNumber.toString()));
-        currentNumber.clear();
-      }
-    }
+    // Extract numbers from matches and convert them to integers
+    List<int> arguments =
+        matches.map((match) => int.parse(match.group(0)!)).toList();
 
-    // Add the last number if there is any
-    if (currentNumber.isNotEmpty) {
-      arguments.add(int.parse(currentNumber.toString()));
-    }
+    //arguments done
+    String result = buttonModel.buttonPressedEvent.substring(0, indexOfSpace);
 
-    final message =
-        OSCMessage(buttonModel.buttonPressedEvent, arguments: arguments);
+    final message = OSCMessage(result, arguments: arguments);
 
     RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
-      print('Sending from ${socket.address.address}:${socket.port}...');
-
       final bytes = message.toBytes();
       socket.send(bytes, destination, ref.watch(outgoingPortProvider));
-      print('Sent OSC message: $bytes');
 
       socket.close();
     });
