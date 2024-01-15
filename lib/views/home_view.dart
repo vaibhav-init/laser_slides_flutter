@@ -40,19 +40,20 @@ class _HomeViewState extends ConsumerState<HomeView> {
   List<ButtonModel> buttons = [];
   final SqliteService sqliteService = SqliteService();
   void sendOSC(ButtonModel buttonModel) {
-    String ipAddress = ref.watch(outgoingIpAddressProvider);
-    int destinationPort = ref.watch(outgoingPortProvider);
+    final destination = InternetAddress(ref.watch(outgoingIpAddressProvider));
 
-    print(ipAddress);
-    print(destinationPort);
-    final oscSocket = OSCSocket(
-      destination: InternetAddress(ipAddress),
-      destinationPort: destinationPort,
-    );
-    final oscMessage =
-        OSCMessage(buttonModel.buttonPressedEvent, arguments: [1, 'temp']);
-    oscSocket.send(oscMessage);
-    oscSocket.close();
+    final message =
+        OSCMessage(buttonModel.buttonPressedEvent, arguments: [1, 1]);
+
+    RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
+      print('Sending from ${socket.address.address}:${socket.port}...');
+
+      final bytes = message.toBytes();
+      socket.send(bytes, destination, ref.watch(outgoingPortProvider));
+      print('Sent OSC message: $bytes');
+
+      socket.close();
+    });
   }
 
   @override
@@ -77,6 +78,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     var darkMode = ref.watch(darkModeProvider);
     Widget buildItem(ButtonModel buttonModel) {
       return Stack(
@@ -84,7 +86,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
         children: [
           InkWell(
             borderRadius: BorderRadius.circular(15.0),
-            onTap: () => sendOSC(buttonModel),
+            onTapDown: (value) => sendOSC(buttonModel),
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
@@ -196,7 +198,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
           child: ReorderableGridView.count(
             crossAxisSpacing: 25,
             mainAxisSpacing: 25,
-            crossAxisCount: 5,
+            crossAxisCount: screenWidth > 600 ? 5 : 2,
             onReorder: (oldIndex, newIndex) {
               setState(() {
                 final element = buttons.removeAt(oldIndex);
