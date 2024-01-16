@@ -17,6 +17,7 @@ class OscRepository {
   void sendButtonPressedOSC(ButtonModel buttonModel, BuildContext context) {
     try {
       final destination = InternetAddress(ref.watch(outgoingIpAddressProvider));
+      print(destination);
       int indexOfSpace = buttonModel.buttonPressedEvent.indexOf(' ');
 
       RegExp regex = RegExp(r'\d+');
@@ -25,6 +26,7 @@ class OscRepository {
       List<int> arguments =
           matches.map((match) => int.parse(match.group(0)!)).toList();
       String result = buttonModel.buttonPressedEvent.substring(0, indexOfSpace);
+      print(result);
 
       final message = OSCMessage(result, arguments: arguments);
 
